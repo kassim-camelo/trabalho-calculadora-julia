@@ -103,22 +103,16 @@ end
 
 function define_prio(expression::String)
     parser = split(expression, "(")
-    parser = filter!(!isempty, parser)
     priority = Dict()
-    for i in eachindex(parser)
-        priority[i] = split(parser[i], ")")
-        if priority[i] == ""
-            priority[i] = "0"
-        elseif length(priority[i]) > 1
-            priority[i][1] = resolve(priority[i][1])
-        end
-        # println(priority[i])
-    end
+    openParent = findall(isequal("("), expression)
+    closeParent = findall(isequal(")"), expression)
+    # TODO TO DO
     # println(priority)
     return priority
 end
 
 function main(arg::String)
+    final_expression = []
     for i in eachindex(arg)
         if is_valid_char(arg[i])
             if arg[i] in symbols
@@ -134,7 +128,6 @@ function main(arg::String)
         end
         priority = define_prio(arg)
         keys = []
-        final_expression = []
         for (key, value) in priority
             push!(keys, key)
         end
@@ -149,8 +142,8 @@ function main(arg::String)
                 end
             end
         end
-        println("final_expression", final_expression)
     end    
+    println("final_expression", final_expression)
 end
 
 main(expr)
