@@ -12,11 +12,14 @@ end
 
 function resolve(question)
     question = filter!(!isempty, collect(question))
+    if question == ""
+        return "0"
+    end
     operation = "."
     arg1 , arg2 = 0, 0
     for i in eachindex(question)
         if question[i] == ""
-            deleteat!(question, i)
+            question[i] = "0"
         end
         if question[i] in operators
             operation = question[i]
