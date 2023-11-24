@@ -102,12 +102,16 @@ function resolve(question)
 end
 
 function define_prio(expression::String)
-    parser = split(expression, "(")
-    priority = Dict()
-    openParent = findall(isequal("("), expression)
-    closeParent = findall(isequal(")"), expression)
+    priority = []
+    openParent = findall(isequal('('), collect(expression))
+    closeParent = findall(isequal(')'), collect(expression))
+    println("openParent: ", openParent)
+    println("closeParent: ", closeParent)
     # TODO TO DO
-    # println(priority)
+    for i in eachindex(openParent)
+        push!(priority, join(expression[openParent[i]+1:closeParent[i]-1]))
+    end
+    println(priority)
     return priority
 end
 
@@ -126,24 +130,13 @@ function main(arg::String)
             printstyled("SyntaxError in char index ", i, " of ", '"',archive,'"',": ","'" ,expr[i],"'", "\n", color=:red)
             break
         end
-        priority = define_prio(arg)
-        keys = []
-        for (key, value) in priority
-            push!(keys, key)
-        end
-        keys = sort(keys)
-        for (key, values) in priority
-            if key in keys
-                for value in values
-                    if length(value) > 1
-                        resolve(value)
-                    end
-                    push!(final_expression, value)
-                end
-            end
-        end
     end    
-    println("final_expression", final_expression)
+    priority = define_prio(arg)
+    for i in eachindex(priority)
+        res = resolve(priority[i])
+        push!(final_expression, res)
+    end
+    println("final_expression: ", final_expression)
 end
 
 main(expr)
