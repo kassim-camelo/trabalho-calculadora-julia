@@ -107,17 +107,16 @@ function define_prio(expression::String)
     closeParent = findall(isequal(')'), collect(expression))
     println("openParent: ", openParent)
     println("closeParent: ", closeParent)
-    # TODO TO DO
     for i in eachindex(openParent)
         push!(priority, join(expression[openParent[i]+1:closeParent[i]-1]))
         if i < openParent[i] && expression[openParent[i]-1] in symbols
             push!(priority, expression[1:openParent[i]-1])          
         elseif i < openParent[i] && expression[openParent[i]-1] in numbers
-            push!(priority, expression[1:openParent[i]-1] * "*")
+            push!(priority, expression[1:openParent[i]-1])
         elseif expression[closeParent[i]+1] in symbols && i > closeParent[i]
             push!(priority, expression[closeParent[i]+1:openParent[i]-1])
         elseif expression[closeParent[i]+1] in numbers && i > closeParent[i]
-            push!(priority, "*" * expression[closeParent[i]+1:openParent[i]-1])
+            push!(priority, expression[closeParent[i]+1:openParent[i]-1])
         end
     end
     println(priority)
